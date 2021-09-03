@@ -66,7 +66,7 @@ Page *BufferPoolManager::FetchPageImpl(page_id_t page_id) {
   page_table_[page_id] = replace_frame_id;
 
   result_page->WLatch();
-  FlushPageIfPossible(page);
+  FlushPageIfPossible(result_page);
   disk_manager_->ReadPage(page_id, result_page->GetData());
   result_page->page_id_ = page_id;
   result_page->pin_count_ = 1;
