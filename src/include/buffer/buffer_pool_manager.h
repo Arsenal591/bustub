@@ -152,6 +152,11 @@ class BufferPoolManager {
    */
   void FlushAllPagesImpl();
 
+  // Following functions are just helper functions. So they do not involve with latches.
+  bool FindAvailablePage(frame_id_t *frame_id);
+
+  void FlushPageIfPossible(Page *page);
+
   /** Number of pages in the buffer pool. */
   size_t pool_size_;
   /** Array of buffer pool pages. */
