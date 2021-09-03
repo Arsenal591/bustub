@@ -13,7 +13,8 @@
 #pragma once
 
 #include <list>
-#include <mutex>  // NOLINT
+#include <mutex>
+#include <unordered_map>
 #include <vector>
 
 #include "buffer/replacer.h"
@@ -46,7 +47,12 @@ class LRUReplacer : public Replacer {
   size_t Size() override;
 
  private:
-  // TODO(student): implement me!
+  using NodeList = std::list<frame_id_t>;
+
+  int num_pages_;
+  NodeList nodes_;
+  std::unordered_map<frame_id_t, NodeList::iterator> index_;
+  std::mutex mutex_;
 };
 
 }  // namespace bustub

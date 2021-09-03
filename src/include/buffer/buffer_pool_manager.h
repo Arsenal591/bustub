@@ -131,6 +131,7 @@ class BufferPoolManager {
    * @param page_id id of page to be flushed, cannot be INVALID_PAGE_ID
    * @return false if the page could not be found in the page table, true otherwise
    */
+  bool flushPageWithoutLock(page_id_t page_id);
   bool FlushPageImpl(page_id_t page_id);
 
   /**
@@ -151,6 +152,11 @@ class BufferPoolManager {
    * Flushes all the pages in the buffer pool to disk.
    */
   void FlushAllPagesImpl();
+
+  // Following functions are just helper functions. So they do not involve with latches.
+  bool FindAvailablePage(frame_id_t *frame_id);
+
+  void FlushPageIfPossible(Page *page);
 
   /** Number of pages in the buffer pool. */
   size_t pool_size_;
