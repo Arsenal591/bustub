@@ -97,7 +97,7 @@ bool BufferPoolManager::UnpinPageImpl(page_id_t page_id, bool is_dirty) {
     page = &(pages_[frame_id]);
   }
   page->WLatch();
-  page->is_dirty_ = is_dirty;
+  page->is_dirty_ |= is_dirty;
   bool ret = false;
   if (page->pin_count_ > 0) {
     ret = true;
