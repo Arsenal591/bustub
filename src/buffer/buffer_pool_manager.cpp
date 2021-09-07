@@ -98,24 +98,11 @@ bool BufferPoolManager::UnpinPageImpl(page_id_t page_id, bool is_dirty) {
   return ret;
 }
 
-bool BufferPoolManager::flushPageWithoutLock(bustub::page_id_t page_id) {
-  const auto it = page_table_.find(page_id);
-  if (it == page_table_.end()) {
-    return false;
-  }
-  const frame_id_t frame_id = it->second;
-  Page *page = &(pages_[frame_id]);
-  page->WLatch();
-  FlushPageIfPossible(page);
-  page->WUnlatch();
-  return true;
-}
-
 bool BufferPoolManager::FlushPageImpl(page_id_t page_id) {
   // Make sure you call DiskManager::WritePage!
   std::unique_lock<std::mutex> lock(latch_);
 
-  return flushPageWithoutLock(page_id);
+  return FlushPageWithoutLock(page_id);
 }
 
 Page *BufferPoolManager::NewPageImpl(page_id_t *page_id) {
@@ -183,8 +170,21 @@ void BufferPoolManager::FlushAllPagesImpl() {
   std::unique_lock<std::mutex> lock(latch_);
 
   for (const auto &kv : page_table_) {
-    flushPageWithoutLock(kv.first);
+    FlushPageWithoutLock(kv.first);
   }
+}
+
+bool BufferPoolManager::FlushPageWithoutLock(bustub::page_id_t page_id) {
+  const auto it = page_table_.find(page_id);
+  if (it == page_table_.end()) {
+    return false;
+  }
+  const frame_id_t frame_id = it->second;
+  Page *page = &(pages_[frame_id]);
+  page->WLatch();
+  FlushPageIfPossible(page);
+  page->WUnlatch();
+  return true;
 }
 
 bool BufferPoolManager::FindAvailablePage(frame_id_t *frame_id) {
