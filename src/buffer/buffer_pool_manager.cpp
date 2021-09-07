@@ -56,7 +56,6 @@ Page *BufferPoolManager::FetchPageImpl(page_id_t page_id) {
     result_page->WUnlatch();
     return result_page;
   }
-
   frame_id_t replace_frame_id;
   bool found = FindAvailablePage(&replace_frame_id);
   if (!found) {
